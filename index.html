@@ -1,379 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CinePlay Express - Streaming Grátis</title>
-    <!-- Fontes e Ícones Reais Testados -->
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CineFlix</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0d1020;color:#fff;font:16px Arial}
+header{padding:70px 8%;background:linear-gradient(135deg,#171b43,#681d67)}
+h1{font-size:clamp(2rem,6vw,4rem);margin:10px 0}
+input,select{padding:14px;border:0;border-radius:10px;margin-top:20px}
+input{width:min(650px,100%)}select{background:#1b2140;color:#fff}
+.toolbar{padding:25px 8%}.grid{padding:0 8%;display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.card{background:#181d35;border:1px solid #343d69;border-radius:15px;padding:20px}
+.card h2{color:#ffd166}.card p{color:#cbd0ed;line-height:1.5}
+a{display:inline-block;background:#6745e8;color:#fff;padding:11px 15px;
+border-radius:8px;text-decoration:none}
+.notice{margin:35px 8%;color:#bbb}
+</style>
 </head>
 <body>
 
-    <!-- Menu Superior Fixo -->
-    <header class="main-header">
-        <div class="header-container">
-            <a href="#" class="logo"><i class="fa-solid fa-clapperboard text-pop"></i> Cine<span>Play</span></a>
-            <nav class="nav-menu" id="navMenu">
-                <a href="#inicio" class="nav-link active">Início</a>
-                <a href="#filmes" class="nav-link">Filmes</a>
-                <a href="#series" class="nav-link">Séries</a>
-                <a href="#futebol" class="nav-link">Futebol Ao Vivo</a>
-                <a href="#contato" class="nav-link">Suporte</a>
-            </nav>
-            <button class="btn-menu-mobile" id="btnMenuMobile">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
-    </header>
+<header>
+<div style="color:#ffd166;letter-spacing:4px">CINEFLIX</div>
+<h1>Filmes, séries, novelas e futebol</h1>
+<p>Encontre conteúdos e acesse somente fontes oficiais.</p>
+<input id="busca" placeholder="Buscar título, gênero ou tipo...">
+</header>
 
-    <!-- Seção Destaque Principal (Hero) -->
-    <section id="inicio" class="hero-section">
-        <div class="hero-container">
-            <span class="badge-live"><i class="fa-solid fa-fire"></i> DESTAQUE DA SEMANA</span>
-            <h1 class="hero-title">O Retorno do Rei</h1>
-            <p class="hero-subtitle">Assista agora ao maior clássico do cinema épico inteiramente dublado e em alta definição. Sem anúncios travando sua tela e 100% gratuito.</p>
-            <div class="hero-actions">
-                <button class="btn-play" onclick="openPlayer('https://youtube.com')">
-                    <i class="fa-solid fa-play"></i> Assistir Agora
-                </button>
-            </div>
-        </div>
-    </section>
+<div class="toolbar">
+<select id="tipo">
+<option value="">Todos os tipos</option>
+<option>Filme</option><option>Série</option>
+<option>Novela</option><option>Futebol</option>
+</select>
+</div>
 
-    <!-- Grid de Filmes Atualizados -->
-    <section id="filmes" class="catalog-section">
-        <div class="section-container">
-            <h2 class="catalog-heading"><i class="fa-solid fa-film text-pop"></i> Filmes Atualizados <span>Dublados</span></h2>
-            <div class="media-grid">
-                
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Interestelar">
-                        <span class="card-badge">HD Dublado</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Interestelar</h3>
-                        <p>Ficção Científica / Aventura</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
-                    </div>
-                </div>
+<main id="catalogo" class="grid"></main>
 
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Batman">
-                        <span class="card-badge">4K Dublado</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>O Cavaleiro das Trevas</h3>
-                        <p>Ação / Suspense</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
-                    </div>
-                </div>
+<p class="notice">
+Este catálogo não hospeda cópias nem transmissões. Use somente links autorizados.
+</p>
 
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="A Origem">
-                        <span class="card-badge">1080p</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>A Origem</h3>
-                        <p>Ficção / Ação</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
-                    </div>
-                </div>
+<script>
+const conteudos=[
+ {
+  titulo:"Exemplo de filme oficial",
+  tipo:"Filme",
+  genero:"Drama",
+  descricao:"Substitua este exemplo por um filme autorizado.",
+  link:"https://www.youtube.com/"
+ },
+ {
+  titulo:"Exemplo de série oficial",
+  tipo:"Série",
+  genero:"Aventura",
+  descricao:"Adicione a plataforma oficial e a sinopse.",
+  link:"https://www.youtube.com/"
+ },
+ {
+  titulo:"Próximo jogo de futebol",
+  tipo:"Futebol",
+  genero:"Ao vivo",
+  descricao:"Informe horário, competição e transmissão oficial.",
+  link:"https://www.fifa.com/"
+ }
+];
 
-            </div>
-        </div>
-    </section>
+function mostrar(){
+ const busca=document.querySelector("#busca").value.toLowerCase();
+ const tipo=document.querySelector("#tipo").value;
 
-    <!-- Grid de Séries Completas -->
-    <section id="series" class="catalog-section alt-bg">
-        <div class="section-container">
-            <h2 class="catalog-heading"><i class="fa-solid fa-tv text-pop"></i> Séries <span>Completas</span></h2>
-            <div class="media-grid">
+ const lista=conteudos.filter(item=>
+  (!tipo||item.tipo===tipo)&&
+  (`${item.titulo} ${item.tipo} ${item.genero}`
+  .toLowerCase().includes(busca))
+ );
 
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Stranger Things">
-                        <span class="card-badge series">Temporadas Completas</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Stranger Things</h3>
-                        <p>Ficção / Mistério</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Assistir Série</button>
-                    </div>
-                </div>
+ document.querySelector("#catalogo").innerHTML=lista.map(item=>`
+  <article class="card">
+   <small>${item.tipo} · ${item.genero}</small>
+   <h2>${item.titulo}</h2>
+   <p>${item.descricao}</p>
+   <a href="${item.link}" target="_blank" rel="noopener">
+    Acessar fonte oficial
+   </a>
+  </article>
+ `).join("")||"<p>Nenhum resultado encontrado.</p>";
+}
 
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Breaking Bad">
-                        <span class="card-badge series">Completa</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Breaking Bad</h3>
-                        <p>Drama / Crime</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Assistir Série</button>
-                    </div>
-                </div>
+document.querySelector("#busca").oninput=mostrar;
+document.querySelector("#tipo").onchange=mostrar;
+mostrar();
+</script>
 
-            </div>
-        </div>
-    </section>
-
-    <!-- Grid de Canais de Futebol Ao Vivo -->
-    <section id="futebol" class="catalog-section">
-        <div class="section-container">
-            <h2 class="catalog-heading"><i class="fa-solid fa-circle-dot text-danger pulse"></i> Futebol <span>Ao Vivo</span></h2>
-            <div class="media-grid">
-
-                <div class="media-card live-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Futebol 1">
-                        <span class="card-badge live">ONLINE AGORA</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Liga dos Campeões - Transmissão 1</h3>
-                        <p>Futebol Internacional ao vivo</p>
-                        <button class="btn-card-play live-btn" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-satellite-dish"></i> Conectar Sinal</button>
-                    </div>
-                </div>
-
-                <div class="media-card live-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Futebol 2">
-                        <span class="card-badge live">ONLINE AGORA</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Campeonato Brasileiro - Sinal 2</h3>
-                        <p>Principais rodadas do dia</p>
-                        <button class="btn-card-play live-btn" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-satellite-dish"></i> Conectar Sinal</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Modal do Player de Vídeo Integrado -->
-    <div class="player-modal" id="playerModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> Fechar Player</button>
-            <div class="video-wrapper">
-                <iframe id="videoPlayerFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-
-    <!-- Formulário de Suporte / Contato -->
-    <section id="contato" class="contact-section">
-        <div class="section-container small-container">
-            <h2 class="catalog-heading text-center">Teve problemas com algum link? <span>Avise-nos</span></h2>
-            <form id="contactForm" class="styled-form">
-                <div class="form-group">
-                    <label for="name">Seu Nome</label>
-                    <input type="text" id="name" placeholder="Insira seu nome completo">
-                    <span class="error-text">O nome precisa ter mais de 3 letras.</span>
-                </div>
-                <div class="form-group">
-                    <label for="email">Seu E-mail</label>
-                    <input type="email" id="email" placeholder="nome@exemplo.com">
-                    <span class="error-text">Insira um e-mail válido.</span>
-                </div>
-                <div class="form-group">
-                    <label for="message">Qual link ou canal está com problema?</label>
-                    <textarea id="message" rows="4" placeholder="Escreva o nome do filme ou canal..."></textarea>
-
-                    <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CinePlay Express - Streaming Grátis</title>
-    <!-- Fontes e Ícones Oficiais Conectados -->
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <!-- Menu Superior Fixo -->
-    <header class="main-header">
-        <div class="header-container">
-            <a href="#" class="logo"><i class="fa-solid fa-clapperboard text-pop"></i> Cine<span>Play</span></a>
-            <nav class="nav-menu" id="navMenu">
-                <a href="#inicio" class="nav-link active">Início</a>
-                <a href="#filmes" class="nav-link">Filmes</a>
-                <a href="#series" class="nav-link">Séries</a>
-                <a href="#futebol" class="nav-link">Futebol Ao Vivo</a>
-                <a href="#contato" class="nav-link">Suporte</a>
-            </nav>
-            <button class="btn-menu-mobile" id="btnMenuMobile">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
-    </header>
-
-    <!-- Seção Destaque Principal (Hero) -->
-    <section id="inicio" class="hero-section">
-        <div class="hero-container">
-            <span class="badge-live"><i class="fa-solid fa-fire"></i> DESTAQUE DA SEMANA</span>
-            <h1 class="hero-title">O Retorno do Rei</h1>
-            <p class="hero-subtitle">Assista agora ao maior clássico do cinema épico inteiramente dublado e em alta definição. Sem anúncios travando sua tela e 100% gratuito.</p>
-            <div class="hero-actions">
-                <button class="btn-play" onclick="openPlayer('https://youtube.com')">
-                    <i class="fa-solid fa-play"></i> Assistir Agora
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Grid de Filmes Atualizados -->
-    <section id="filmes" class="catalog-section">
-        <div class="section-container">
-            <h2 class="catalog-heading"><i class="fa-solid fa-film text-pop"></i> Filmes Atualizados <span>Dublados</span></h2>
-            <div class="media-grid">
-                
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Interestelar">
-                        <span class="card-badge">HD Dublado</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Interestelar</h3>
-                        <p>Ficção Científica / Aventura</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
-                    </div>
-                </div>
-
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Batman">
-                        <span class="card-badge">4K Dublado</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>O Cavaleiro das Trevas</h3>
-                        <p>Ação / Suspense</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
-                    </div>
-                </div>
-
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="A Origem">
-                        <span class="card-badge">1080p</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>A Origem</h3>
-                        <p>Ficção / Ação</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Grid de Séries Completas -->
-    <section id="series" class="catalog-section alt-bg">
-        <div class="section-container">
-            <h2 class="catalog-heading"><i class="fa-solid fa-tv text-pop"></i> Séries <span>Completas</span></h2>
-            <div class="media-grid">
-
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Stranger Things">
-                        <span class="card-badge series">Temporadas Completas</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Stranger Things</h3>
-                        <p>Ficção / Mistério</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Assistir Série</button>
-                    </div>
-                </div>
-
-                <div class="media-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Breaking Bad">
-                        <span class="card-badge series">Completa</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Breaking Bad</h3>
-                        <p>Drama / Crime</p>
-                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Assistir Série</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Grid de Canais de Futebol Ao Vivo -->
-    <section id="futebol" class="catalog-section">
-        <div class="section-container">
-            <h2 class="catalog-heading"><i class="fa-solid fa-circle-dot text-danger pulse"></i> Futebol <span>Ao Vivo</span></h2>
-            <div class="media-grid">
-
-                <div class="media-card live-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Futebol 1">
-                        <span class="card-badge live">ONLINE AGORA</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Liga dos Campeões - Transmissão 1</h3>
-                        <p>Futebol Internacional ao vivo</p>
-                        <button class="btn-card-play live-btn" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-satellite-dish"></i> Conectar Sinal</button>
-                    </div>
-                </div>
-
-                <div class="media-card live-card">
-                    <div class="poster-container">
-                        <img src="https://unsplash.com" alt="Futebol 2">
-                        <span class="card-badge live">ONLINE AGORA</span>
-                    </div>
-                    <div class="card-details">
-                        <h3>Campeonato Brasileiro - Sinal 2</h3>
-                        <p>Principais rodadas do dia</p>
-                        <button class="btn-card-play live-btn" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-satellite-dish"></i> Conectar Sinal</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Modal do Player de Vídeo Integrado -->
-    <div class="player-modal" id="playerModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> Fechar Player</button>
-            <div class="video-wrapper">
-                <iframe id="videoPlayerFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-
-    <!-- Formulário de Suporte / Contato -->
-    <section id="contato" class="contact-section">
-        <div class="section-container small-container">
-            <h2 class="catalog-heading text-center">Teve problemas com algum link? <span>Avise-nos</span></h2>
-            <form id="contactForm" class="styled-form">
-                <div class="form-group">
-                    <label for="name">Seu Nome</label>
-                    <input type="text" id="name" placeholder="Insira seu nome completo">
-                    <span class="error-text">O nome precisa ter mais de 3 letras.</span>
-                </div>
-                <div class="form-group">
-                    <label for="email">Seu E-mail</label>
-                    <input type="email" id="email" placeholder="nome@exemplo.com">
-                    <span class="error-text">Insira um e-mail válido.</span>
-                </div>
-                <div class="form-group">
-                    <label for="message">Qual link ou canal está com problema?</label>
-                    <textarea id="message" rows="4" placeholder="Escreva o nome do filme ou canal..."></textarea>
-                    <span class="error-text">Por favor, escreva uma mensagem curta.</span>
-                </div>
+</body>
+</html>
