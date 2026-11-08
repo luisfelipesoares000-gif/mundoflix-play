@@ -1,591 +1,285 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MundoFlix Play</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CINEMAX</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600&display=swap');
 
-    body {
-      background-color: #060606;
-      color: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+:root {
+  --bg: #141414;
+  --text: #f5f5f5;
+  --muted: #a3a3a3;
+  --red: #e50914;
+  --nav-h: 68px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.5;
+}
+a { color: inherit; text-decoration: none; }
 
-    header {
-      background: #0f0f0f;
-      border-bottom: 2px solid #00ff66;
-      padding: 15px 5%;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+/* NAVBAR */
+.nav {
+  position: fixed; inset: 0 0 auto 0; height: var(--nav-h);
+  display: flex; align-items: center; gap: 2.5rem;
+  padding: 0 4%;
+  background: linear-gradient(to bottom, rgba(0,0,0,.85), transparent);
+  z-index: 50;
+  transition: background .3s;
+}
+.nav.solid { background: var(--bg); }
+.logo {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 2rem; letter-spacing: .08em; color: var(--red);
+}
+.menu { display: flex; gap: 1.4rem; font-size: .9rem; }
+.menu a { color: #d0d0d0; transition: color .2s; }
+.menu a:hover, .menu a.active { color: #fff; }
+.menu a.active { font-weight: 600; }
+.profile {
+  margin-left: auto; width: 34px; height: 34px; border-radius: 6px;
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  display: grid; place-items: center; font-weight: 600;
+}
 
-    .nav-container {
-      max-width: 1300px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-    }
+/* HERO */
+.hero {
+  position: relative; min-height: 88vh;
+  display: flex; align-items: center;
+  padding: var(--nav-h) 4% 0;
+  background:
+    linear-gradient(to right, rgba(20,20,20,.95) 5%, rgba(20,20,20,.2) 70%),
+    linear-gradient(to top, var(--bg) 2%, transparent 40%),
+    var(--hero-bg);
+}
+.hero-content { max-width: 560px; }
+.hero h1 {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(3.2rem, 9vw, 6.5rem);
+  line-height: .95; letter-spacing: .02em; margin-bottom: 1rem;
+}
+.hero-meta { color: #46d369; font-weight: 600; margin-bottom: .8rem; }
+.hero-meta span { color: var(--muted); font-weight: 400; margin-left: .8rem; }
+.hero-desc { color: #e2e2e2; max-width: 48ch; margin-bottom: 1.6rem; }
+.hero-actions { display: flex; gap: .8rem; flex-wrap: wrap; }
+.btn {
+  font: inherit; font-weight: 600; font-size: 1rem;
+  padding: .7rem 1.6rem; border: 0; border-radius: 6px; cursor: pointer;
+  transition: transform .15s, background .2s;
+}
+.btn:hover { transform: scale(1.04); }
+.btn-play { background: #fff; color: #000; }
+.btn-play:hover { background: #d9d9d9; }
+.btn-info { background: rgba(109,109,110,.7); color: #fff; }
+.btn-info:hover { background: rgba(109,109,110,.4); }
+.btn:focus-visible, .arrow:focus-visible, .card:focus-visible {
+  outline: 3px solid #fff; outline-offset: 3px;
+}
 
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #ffffff;
-      text-decoration: none;
-      cursor: pointer;
-    }
+/* ROWS */
+main { margin-top: -6vh; position: relative; z-index: 2; padding-bottom: 3rem; }
+.row { margin-bottom: 2.2rem; }
+.row h2 { font-size: 1.25rem; font-weight: 600; padding: 0 4%; margin-bottom: .6rem; }
+.row-wrap { position: relative; }
+.track {
+  display: flex; gap: 8px;
+  overflow-x: auto; scroll-snap-type: x proximity;
+  padding: 2.2rem 4% 3rem; margin: -2.2rem 0 -3rem;
+  scrollbar-width: none;
+}
+.track::-webkit-scrollbar { display: none; }
 
-    .logo span {
-      color: #00ff66;
-      text-shadow: 0 0 10px #00ff66;
-    }
+.arrow {
+  position: absolute; top: 2.2rem; bottom: 3rem; width: 4%;
+  border: 0; background: rgba(20,20,20,.65); color: #fff;
+  font-size: 2rem; cursor: pointer; z-index: 5;
+  opacity: 0; transition: opacity .2s, background .2s;
+}
+.arrow.left { left: 0; } .arrow.right { right: 0; }
+.row-wrap:hover .arrow { opacity: 1; }
+.arrow:hover { background: rgba(20,20,20,.9); }
 
-    .search-box {
-      display: flex;
-      background: #181818;
-      border: 1px solid #333;
-      border-radius: 50px;
-      padding: 4px 6px 4px 18px;
-      flex: 1;
-      max-width: 450px;
-    }
+/* CARDS */
+.card {
+  position: relative; flex: 0 0 auto;
+  width: clamp(130px, 17vw, 240px); aspect-ratio: 2 / 3;
+  border-radius: 6px; overflow: hidden; cursor: pointer;
+  scroll-snap-align: start;
+  background: var(--poster);
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, opacity .3s, z-index 0s .3s;
+}
+.card .poster-title {
+  position: absolute; inset: auto 0 0 0; padding: 2.5rem .8rem .8rem;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.5rem; line-height: 1; letter-spacing: .03em;
+  background: linear-gradient(to top, rgba(0,0,0,.75), transparent);
+}
+.card .info {
+  position: absolute; inset: 0; padding: .9rem;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: .35rem;
+  background: linear-gradient(to top, rgba(0,0,0,.95) 30%, rgba(0,0,0,.2));
+  opacity: 0; transition: opacity .25s;
+}
+.info b { font-size: .95rem; }
+.info small { color: var(--muted); }
+.info .score { color: #46d369; font-weight: 600; font-size: .85rem; }
+.info .mini { display: flex; gap: .4rem; margin-top: .2rem; }
+.info .mini i {
+  font-style: normal; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center; font-size: .8rem;
+  border: 1.5px solid #aaa; background: rgba(0,0,0,.4);
+}
+.info .mini i:first-child { background: #fff; color: #000; border-color: #fff; }
 
-    .search-box input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #fff;
-      font-size: 0.95rem;
-      width: 100%;
-    }
+@media (hover: hover) {
+  .track:hover .card { opacity: .55; }
+  .card:hover, .card:focus-visible {
+    opacity: 1; transform: scale(1.18); z-index: 10;
+    box-shadow: 0 14px 40px rgba(0,0,0,.8); transition-delay: 0s;
+  }
+  .card:hover .info, .card:focus-visible .info { opacity: 1; }
+  .card:first-child:hover { transform-origin: left center; }
+  .card:last-child:hover { transform-origin: right center; }
+}
 
-    .search-box button {
-      background: #00ff66;
-      color: #000;
-      border: none;
-      outline: none;
-      padding: 8px 18px;
-      border-radius: 50px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+.footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 2rem 4% 3rem; }
 
-    .tabs-bar {
-      max-width: 1300px;
-      margin: 20px auto 10px;
-      padding: 0 5%;
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-    }
-
-    .tab-btn {
-      background: #161616;
-      color: #bbb;
-      border: 1px solid #282828;
-      padding: 10px 22px;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: 0.2s;
-    }
-
-    .tab-btn:hover {
-      border-color: #00ff66;
-      color: #fff;
-    }
-
-    .tab-btn.active {
-      background: #00ff66;
-      color: #000;
-      border-color: #00ff66;
-      font-weight: 700;
-      box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
-    }
-
-    #player-section {
-      display: none;
-      max-width: 1000px;
-      margin: 15px auto 30px;
-      padding: 0 5%;
-      width: 100%;
-    }
-
-    .player-box {
-      background: #111;
-      border: 1px solid #00ff66;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 0 25px rgba(0, 255, 102, 0.25);
-    }
-
-    .player-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      background: #181818;
-      border-bottom: 1px solid #282828;
-    }
-
-    .player-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #00ff66;
-    }
-
-    .btn-fechar {
-      background: #ff2a2a;
-      color: #fff;
-      border: none;
-      padding: 6px 16px;
-      border-radius: 50px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .video-wrap {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%;
-      background: #000;
-    }
-
-    .video-wrap iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .player-desc {
-      padding: 14px 20px;
-      color: #ccc;
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
-    main {
-      max-width: 1300px;
-      margin: 10px auto 60px;
-      padding: 0 5%;
-      flex: 1;
-      width: 100%;
-    }
-
-    .category-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .category-title::before {
-      content: '';
-      width: 5px;
-      height: 20px;
-      background: #00ff66;
-      border-radius: 2px;
-      box-shadow: 0 0 8px #00ff66;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 22px;
-    }
-
-    .card {
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-      border-color: #00ff66;
-      box-shadow: 0 8px 20px rgba(0, 255, 102, 0.3);
-    }
-
-    .card-thumb {
-      position: relative;
-      width: 100%;
-      padding-top: 145%;
-      background: #1a1a1a;
-      overflow: hidden;
-    }
-
-    .card-thumb img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .badge-tag {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.85);
-      color: #00ff66;
-      border: 1px solid #00ff66;
-      padding: 3px 8px;
-      border-radius: 15px;
-      font-size: 0.72rem;
-      font-weight: 700;
-    }
-
-    .badge-audio {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.85);
-      color: #fff;
-      padding: 3px 6px;
-      border-radius: 4px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      border: 1px solid #444;
-    }
-
-    .card-body {
-      padding: 14px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 5px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-synopsis {
-      font-size: 0.8rem;
-      color: #888;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-
-    .card-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: #00ff66;
-      font-weight: 700;
-    }
-
-    footer {
-      border-top: 1px solid #1a1a1a;
-      background: #090909;
-      text-align: center;
-      padding: 20px 5%;
-      color: #666;
-      font-size: 0.85rem;
-      margin-top: auto;
-    }
-  </style>
+@media (max-width: 700px) {
+  .menu a:not(.active) { display: none; }
+  .hero { min-height: 75vh; }
+  .arrow { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <div class="nav-container">
-      <div class="logo" onclick="filtrar('tudo')">MundoFlix <span>Play</span></div>
-      <div class="search-box">
-        <input type="text" id="campoBusca" placeholder="Pesquisar filmes, séries, novelas ou futebol..." />
-        <button id="btnBuscar">Buscar</button>
-      </div>
-    </div>
-  </header>
-
-  <nav class="tabs-bar">
-    <button class="tab-btn active" onclick="filtrar('tudo')">Tudo</button>
-    <button class="tab-btn" onclick="filtrar('futebol')">⚽ Transmissões Esportivas</button>
-    <button class="tab-btn" onclick="filtrar('filmes')">🎬 Filmes (PT-BR)</button>
-    <button class="tab-btn" onclick="filtrar('series')">📺 Séries (PT-BR)</button>
-    <button class="tab-btn" onclick="filtrar('novelas')">🎭 Novelas (PT-BR)</button>
+<header class="nav" id="nav">
+  <a class="logo" href="#">CINEMAX</a>
+  <nav class="menu">
+    <a href="#" class="active">Início</a>
+    <a href="#">Séries</a>
+    <a href="#">Filmes</a>
+    <a href="#">Novidades</a>
+    <a href="#">Minha lista</a>
   </nav>
+  <div class="profile" aria-label="Perfil">U</div>
+</header>
 
-  <section id="player-section">
-    <div class="player-box">
-      <div class="player-header">
-        <div class="player-title" id="playerTitulo">Reproduzindo</div>
-        <button class="btn-fechar" onclick="fecharPlayer()">Fechar Player ✕</button>
-      </div>
-      <div class="video-wrap">
-        <iframe id="iframeVideo" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-      </div>
-      <div class="player-desc" id="playerDescricao"></div>
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <h1 id="hero-title"></h1>
+    <p class="hero-meta" id="hero-meta"></p>
+    <p class="hero-desc" id="hero-desc"></p>
+    <div class="hero-actions">
+      <button class="btn btn-play">▶ Assistir</button>
+      <button class="btn btn-info">Mais informações</button>
     </div>
-  </section>
+  </div>
+</section>
 
-  <main>
-    <h2 class="category-title" id="tituloSecao">Conteúdos em Destaque</h2>
-    
-    <div class="grid" id="gridMidias">
-      <!-- Cards pré-renderizados garantem carregamento instantâneo -->
-      <div class="card" onclick="abrirPlayer('Real Madrid TV Oficial', 'Transmissões oficiais, treinos ao vivo e bastidores do Real Madrid.', 'https://www.youtube.com/embed/5qap5aO4i9A')">
-        <div class="card-thumb">
-          <span class="badge-tag">⚽ Esporte</span>
-          <span class="badge-audio">AO VIVO</span>
-          <img src="https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=600&auto=format&fit=crop&q=80" alt="Real Madrid TV">
-        </div>
-        <div class="card-body">
-          <div class="card-title">Real Madrid TV Oficial</div>
-          <div class="card-synopsis">Partidas clássicas da Champions League e treinos ao vivo.</div>
-          <div class="card-meta"><span>Ao Vivo</span><span>★ 9.8</span></div>
-        </div>
-      </div>
+<main id="rows"></main>
 
-      <div class="card" onclick="abrirPlayer('Manchester City Matchday', 'Análises táticas com Pep Guardiola e acompanhamento de treinos ao vivo.', 'https://www.youtube.com/embed/kJQP7kiw5Fk')">
-        <div class="card-thumb">
-          <span class="badge-tag">⚽ Esporte</span>
-          <span class="badge-audio">AO VIVO</span>
-          <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=600&auto=format&fit=crop&q=80" alt="Man City TV">
-        </div>
-        <div class="card-body">
-          <div class="card-title">Manchester City Matchday</div>
-          <div class="card-synopsis">Bastidores e cobertura completa da Premier League.</div>
-          <div class="card-meta"><span>Ao Vivo</span><span>★ 9.7</span></div>
-        </div>
-      </div>
+<footer class="footer">Projeto de estudo · todos os títulos e dados são fictícios</footer>
 
-      <div class="card" onclick="abrirPlayer('Interestelar (Dublado)', 'Um grupo de exploradores viaja através de um buraco de minhoca no espaço para garantir a sobrevivência humana.', 'https://www.youtube.com/embed/mbbPSq6353Q')">
-        <div class="card-thumb">
-          <span class="badge-tag">🎬 Filme</span>
-          <span class="badge-audio">PT-BR</span>
-          <img src="https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" alt="Interestelar">
-        </div>
-        <div class="card-body">
-          <div class="card-title">Interestelar</div>
-          <div class="card-synopsis">Uma viagem inesquecível pelo tempo e espaço.</div>
-          <div class="card-meta"><span>2014</span><span>★ 8.7</span></div>
-        </div>
-      </div>
+<script>
+// ===== DADOS FICTÍCIOS =====
+const hero = {
+  title: "Noite Eterna",
+  year: 2025, rating: "16+", match: 97, genre: "Ficção científica",
+  desc: "Quando o sol deixa de nascer, uma engenheira e um ex-piloto precisam atravessar uma cidade em escuridão total para reativar a última usina de luz.",
+  hue: 255
+};
 
-      <div class="card" onclick="abrirPlayer('Breaking Bad (Dublado)', 'Um professor de química descobre um câncer terminal e decide fabricar metanfetamina para sustentar sua família.', 'https://www.youtube.com/embed/HhesaQXLuRY')">
-        <div class="card-thumb">
-          <span class="badge-tag">📺 Série</span>
-          <span class="badge-audio">PT-BR</span>
-          <img src="https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg" alt="Breaking Bad">
-        </div>
-        <div class="card-body">
-          <div class="card-title">Breaking Bad</div>
-          <div class="card-synopsis">A premiada história da transformação de Walter White.</div>
-          <div class="card-meta"><span>2008</span><span>★ 9.5</span></div>
-        </div>
-      </div>
+const categories = {
+  "Populares": ["Código Zero", "A Última Estação", "Mares de Cinza", "Reino Partido", "Luz do Norte", "O Colecionador", "Vento Sul", "Fronteira"],
+  "Ação": ["Velocidade Crítica", "Linha de Fogo", "Operação Falcão", "Ponto Cego", "Retorno Sombrio", "Alvo Móvel", "Tempestade Rubra", "Resgate 9"],
+  "Comédia": ["Meu Vizinho Genial", "Casa Cheia", "Férias Perfeitas", "O Plano Furado", "Quase Famosos", "Domingo no Sítio", "Troca de Turno", "Festa Surpresa"],
+  "Séries para maratonar": ["Os Herdeiros", "Plantão Noturno", "Cidade Submersa", "A Vila", "Sinal Aberto", "Detetive Moura", "Laços", "Ecos"],
+  "Drama": ["Sob a Chuva", "Cartas Perdidas", "O Peso do Silêncio", "Rua das Palmeiras", "Outono em Casa", "Duas Vidas", "Horizonte", "A Promessa"]
+};
 
-      <div class="card" onclick="abrirPlayer('Avenida Brasil (Dublado)', 'A saga de Rita em busca de justiça contra sua maquiavélica madrasta Carminha.', 'https://www.youtube.com/embed/1Jc64fDflA4')">
-        <div class="card-thumb">
-          <span class="badge-tag">🎭 Novela</span>
-          <span class="badge-audio">PT-BR</span>
-          <img src="https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHcjOgEE2t2.jpg" alt="Avenida Brasil">
-        </div>
-        <div class="card-body">
-          <div class="card-title">Avenida Brasil</div>
-          <div class="card-synopsis">Um dos maiores sucessos da dramaturgia brasileira no mundo.</div>
-          <div class="card-meta"><span>2012</span><span>★ 8.9</span></div>
-        </div>
-      </div>
-    </div>
-  </main>
+// ===== FUNÇÕES AUXILIARES =====
+function hash(str) {
+  let h = 0;
+  for (const c of str) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return h;
+}
+function fakeData(title) {
+  const h = hash(title);
+  return {
+    title,
+    hue: h % 360,
+    year: 2015 + (h % 11),
+    match: 70 + (h % 30),
+    rating: ["L", "12+", "14+", "16+"][h % 4],
+    mins: 85 + (h % 60)
+  };
+}
+const posterBg = hue =>
+  `linear-gradient(160deg, hsl(${hue} 70% 38%), hsl(${(hue + 50) % 360} 65% 14%))`;
 
-  <footer>
-    &copy; MundoFlix Play - Catálogo de Mídias e Esportes.
-  </footer>
+// ===== HERO =====
+const heroEl = document.getElementById("hero");
+heroEl.style.setProperty("--hero-bg",
+  `radial-gradient(circle at 75% 35%, hsl(${hero.hue} 80% 45% / .75), transparent 55%), hsl(${hero.hue} 50% 10%)`);
+document.getElementById("hero-title").textContent = hero.title;
+document.getElementById("hero-meta").innerHTML =
+  `${hero.match}% relevante <span>${hero.year} · ${hero.rating} · ${hero.genre}</span>`;
+document.getElementById("hero-desc").textContent = hero.desc;
 
-  <script>
-    const API_KEY = '83cd0c07d3969562768e1465ed3b890f';
-    const BASE_URL = 'https://themoviedb.org';
-    const IMG_URL = 'https://tmdb.org';
+// ===== FILEIRAS DE CARDS =====
+const rowsEl = document.getElementById("rows");
 
-    const CANAIS_ESPORTES = [
-      {
-        title: 'Real Madrid TV Oficial',
-        overview: 'Transmissões oficiais, treinos ao vivo e bastidores do Real Madrid.',
-        poster: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=600&auto=format&fit=crop&q=80',
-        videoUrl: 'https://www.youtube.com/embed/5qap5aO4i9A',
-        badge: '⚽ Esporte',
-        ano: 'Ao Vivo'
-      },
-      {
-        title: 'Manchester City Matchday',
-        overview: 'Análises táticas com Pep Guardiola e acompanhamento de treinos ao vivo.',
-        poster: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=600&auto=format&fit=crop&q=80',
-        videoUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk',
-        badge: '⚽ Esporte',
-        ano: 'Ao Vivo'
-      },
-      {
-        title: 'Santos TV Oficial',
-        overview: 'Treinos do CT Rei Pelé e melhores momentos das vitórias do Peixe.',
-        poster: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&auto=format&fit=crop&q=80',
-        videoUrl: 'https://www.youtube.com/embed/L_LUpnjgPso',
-        badge: '⚽ Esporte',
-        ano: 'Ao Vivo'
-      },
-      {
-        title: 'FIFA+ Copa do Mundo Clássicos',
-        overview: 'Partidas lendárias e acervo oficial das Copas do Mundo da FIFA.',
-        poster: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=600&auto=format&fit=crop&q=80',
-        videoUrl: 'https://www.youtube.com/embed/fJ9rUzIMcZQ',
-        badge: '⚽ Esporte',
-        ano: 'Histórico'
-      }
-    ];
+Object.entries(categories).forEach(([name, titles]) => {
+  const row = document.createElement("section");
+  row.className = "row";
+  row.innerHTML = `
+    <h2>${name}</h2>
+    <div class="row-wrap">
+      <button class="arrow left" aria-label="Voltar">‹</button>
+      <div class="track"></div>
+      <button class="arrow right" aria-label="Avançar">›</button>
+    </div>`;
+  const track = row.querySelector(".track");
 
-    function abrirPlayer(titulo, sinopse, urlVideo) {
-      document.getElementById('playerTitulo').textContent = titulo;
-      document.getElementById('playerDescricao').textContent = sinopse || 'Sinopse não disponível.';
-      document.getElementById('iframeVideo').src = urlVideo;
-      document.getElementById('player-section').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  titles.forEach(t => {
+    const d = fakeData(t);
+    const card = document.createElement("article");
+    card.className = "card";
+    card.tabIndex = 0;
+    card.style.setProperty("--poster", posterBg(d.hue));
+    card.innerHTML = `
+      <div class="poster-title">${d.title}</div>
+      <div class="info">
+        <div class="mini"><i>▶</i><i>+</i><i>♥</i></div>
+        <b>${d.title}</b>
+        <span class="score">${d.match}% relevante</span>
+        <small>${d.rating} · ${d.year} · ${d.mins} min</small>
+      </div>`;
+    track.appendChild(card);
+  });
 
-    function fecharPlayer() {
-      document.getElementById('iframeVideo').src = '';
-      document.getElementById('player-section').style.display = 'none';
-    }
+  const scrollBy = dir => track.scrollBy({ left: dir * track.clientWidth * 0.85, behavior: "smooth" });
+  row.querySelector(".left").onclick = () => scrollBy(-1);
+  row.querySelector(".right").onclick = () => scrollBy(1);
 
-    function desenharGrid(itens) {
-      const container = document.getElementById('gridMidias');
-      container.innerHTML = '';
+  rowsEl.appendChild(row);
+});
 
-      if (!itens || itens.length === 0) {
-        container.innerHTML = '<p style="color:#777; grid-column: 1/-1; text-align:center; padding: 40px 0;">Nenhum conteúdo encontrado.</p>';
-        return;
-      }
-
-      itens.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        const titulo = item.title || item.name || 'Título';
-        const sinopse = item.overview || 'Sinopse em português do Brasil.';
-        const ano = item.ano || (item.release_date || item.first_air_date || '2024').substring(0, 4);
-        const badge = item.badge || (item.first_air_date ? '📺 Série' : '🎬 Filme');
-        const imagem = item.poster || (item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80');
-        const video = item.videoUrl || `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(titulo + ' trailer dublado')}`;
-
-        card.innerHTML = `
-          <div class="card-thumb">
-            <span class="badge-tag">${badge}</span>
-            <span class="badge-audio">PT-BR</span>
-            <img src="${imagem}" alt="${titulo}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80'">
-          </div>
-          <div class="card-body">
-            <div class="card-title">${titulo}</div>
-            <div class="card-synopsis">${sinopse}</div>
-            <div class="card-meta"><span>${ano}</span><span>★ 8.5</span></div>
-          </div>
-        `;
-
-        card.onclick = () => abrirPlayer(titulo, sinopse, video);
-        container.appendChild(card);
-      });
-    }
-
-    async function buscarAPI(endpoint, extra = '') {
-      try {
-        const res = await fetch(`https://api.themoviedb.org/3${endpoint}?api_key=${API_KEY}&language=pt-BR&region=BR${extra}`);
-        if (res.ok) {
-          const dados = await res.json();
-          return dados.results || [];
-        }
-      } catch (e) {
-        console.warn('API indisponível no momento.');
-      }
-      return [];
-    }
-
-    async function filtrar(tipo) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      const botoes = document.querySelectorAll('.tab-btn');
-      const tituloSecao = document.getElementById('tituloSecao');
-
-      if (tipo === 'tudo') {
-        botoes[0]?.classList.add('active');
-        tituloSecao.textContent = 'Conteúdos em Destaque';
-        const filmes = await buscarAPI('/movie/popular');
-        const series = await buscarAPI('/tv/popular');
-        const lista = [...CANAIS_ESPORTES, ...filmes.slice(0, 4), ...series.slice(0, 4)];
-        if (lista.length > CANAIS_ESPORTES.length) desenharGrid(lista);
-      } else if (tipo === 'futebol') {
-        botoes[1]?.classList.add('active');
-        tituloSecao.textContent = 'Transmissões Esportivas Oficiais';
-        desenharGrid(CANAIS_ESPORTES);
-      } else if (tipo === 'filmes') {
-        botoes[2]?.classList.add('active');
-        tituloSecao.textContent = 'Filmes Dublados (PT-BR)';
-        const filmes = await buscarAPI('/movie/popular');
-        if (filmes.length) desenharGrid(filmes.map(f => ({ ...f, badge: '🎬 Filme' })));
-      } else if (tipo === 'series') {
-        botoes[3]?.classList.add('active');
-        tituloSecao.textContent = 'Séries Dubladas (PT-BR)';
-        const series = await buscarAPI('/tv/popular');
-        if (series.length) desenharGrid(series.map(s => ({ ...s, badge: '📺 Série' })));
-      } else if (tipo === 'novelas') {
-        botoes[4]?.classList.add('active');
-        tituloSecao.textContent = 'Novelas Dubladas (PT-BR)';
-        const novelas = await buscarAPI('/tv/popular', '&with_genres=10766');
-        if (novelas.length) desenharGrid(novelas.map(n => ({ ...n, badge: '🎭 Novela' })));
-      }
-    }
-
-    async function executarBusca() {
-      const q = document.getElementById('campoBusca').value.trim();
-      if (!q) return;
-
-      document.getElementById('tituloSecao').textContent = `Resultados para: "${q}"`;
-      const esportes = CANAIS_ESPORTES.filter(c => c.title.toLowerCase().includes(q.toLowerCase()));
-      const endpoint = `${BASE_URL}/search/multi`;
-      const apiRes = await buscarAPI('/search/multi', `&query=${encodeURIComponent(q)}`);
-      const filtrados = apiRes.filter(i => i.media_type === 'movie' || i.media_type === 'tv');
-
-      desenharGrid([...esportes, ...filtrados]);
-    }
-
-    document.getElementById('btnBuscar').addEventListener('click', executarBusca);
-    document.getElementById('campoBusca').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') executarBusca();
-    });
-  </script>
+// ===== NAVBAR MUDA AO ROLAR =====
+const nav = document.getElementById("nav");
+const onScroll = () => nav.classList.toggle("solid", window.scrollY > 40);
+window.addEventListener("scroll", onScroll);
+onScroll();
+</script>
 </body>
 </html>
