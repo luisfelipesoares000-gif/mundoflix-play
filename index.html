@@ -3,171 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArenaStream - Filmes, Séries & Jogos de E-Sports ao Vivo</title>
-    <!-- Google Fonts -->
+    <title>CinePlay Express - Streaming Grátis</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome para Ícones -->
+    <link href="https://googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
-    <!-- CSS Externo -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Header / Menu de Navegação -->
+    <!-- Menu Superior Fixo -->
     <header class="main-header">
         <div class="header-container">
-            <a href="#" class="logo">Arena<span>Stream</span></a>
-            
+            <a href="#" class="logo"><i class="fa-solid fa-clapperboard text-pop"></i> Cine<span>Play</span></a>
             <nav class="nav-menu" id="navMenu">
-                <a href="#home" class="nav-link active">Início</a>
-                <a href="#sobre" class="nav-link">Sobre</a>
-                <a href="#catalogo" class="nav-link">Catálogo</a>
-                <a href="#depoimentos" class="nav-link">Depoimentos</a>
-                <a href="#contato" class="nav-link">Contato</a>
-                <a href="https://wa.me" target="_blank" class="btn-cta-nav">Assinar Agora</a>
+                <a href="#inicio" class="nav-link active">Início</a>
+                <a href="#filmes" class="nav-link">Filmes</a>
+                <a href="#series" class="nav-link">Séries</a>
+                <a href="#futebol" class="nav-link">Futebol Ao Vivo</a>
+                <a href="#contato" class="nav-link">Suporte</a>
             </nav>
-
-            <button class="btn-menu-mobile" id="btnMenuMobile" aria-label="Abrir Menu">
+            <button class="btn-menu-mobile" id="btnMenuMobile">
                 <i class="fa-solid fa-bars"></i>
             </button>
         </div>
     </header>
 
-    <!-- Seção Principal (Hero Section) -->
-    <section id="home" class="hero-section">
-        <div class="hero-overlay"></div>
+    <!-- Seção Destaque Principal (Hero) -->
+    <section id="inicio" class="hero-section">
         <div class="hero-container">
-            <div class="hero-badge"><i class="fa-solid fa-circle-play"></i> Transmissão em Alta Definição</div>
-            <h1 class="hero-title">O Melhor do Futebol Virtual, Filmes e Séries Independentes.</h1>
-            <p class="hero-subtitle">Assista a campeonatos ao vivo, ligas de e-sports de futebol, novelas roteirizadas e séries completas onde e quando quiser. Tudo atualizado sem interrupções.</p>
-            <div class="hero-buttons">
-                <a href="#catalogo" class="btn-primary">Explorar Catálogo</a>
-                <a href="https://wa.me" target="_blank" class="btn-secondary"><i class="fa-brands fa-whatsapp"></i> Entrar na Lista VIP</a>
+            <span class="badge-live"><i class="fa-solid fa-fire"></i> DESTAQUE DA SEMANA</span>
+            <h1 class="hero-title">O Retorno do Rei</h1>
+            <p class="hero-subtitle">Assista agora ao maior clássico do cinema épico inteiramente dublado e em alta definição. Sem anúncios travando sua tela e 100% gratuito.</p>
+            <div class="hero-actions">
+                <button class="btn-play" onclick="openPlayer('https://youtube.com')">
+                    <i class="fa-solid fa-play"></i> Assistir Agora
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Seção Sobre Nós -->
-    <section id="sobre" class="about-section">
+    <!-- Grid de Filmes Atualizados -->
+    <section id="filmes" class="catalog-section">
         <div class="section-container">
-            <div class="about-grid">
-                <div class="about-content">
-                    <h2 class="section-title">A Nova Era do <span>Entretenimento</span></h2>
-                    <p class="section-text">A ArenaStream nasceu para revolucionar a forma como você consome mídia online. Desenvolvemos uma plataforma integrada focada na velocidade de carregamento e na experiência do usuário.</p>
-                    <p class="section-text">Nosso sistema utiliza servidores otimizados de CDN de ponta para garantir que suas transmissões de futebol digital e episódios de séries rodem com a máxima fluidez, sem travamentos irritantes no meio do seu entretenimento.</p>
-                    <div class="about-features">
-                        <div class="feature-item">
-                            <i class="fa-solid fa-bolt"></i>
-                            <span>Player Ultra Rápido</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fa-solid fa-tv"></i>
-                            <span>Qualidade 4K Ultra HD</span>
-                        </div>
+            <h2 class="catalog-heading"><i class="fa-solid fa-film text-pop"></i> Filmes Atualizados <span>Dublados</span></h2>
+            <div class="media-grid">
+                
+                <div class="media-card">
+                    <div class="poster-container">
+                        <img src="https://unsplash.com" alt="Filme 1">
+                        <span class="card-badge">HD Dublado</span>
+                    </div>
+                    <div class="card-details">
+                        <h3>Interestelar</h3>
+                        <p>Ficção Científica / Aventura</p>
+                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
                     </div>
                 </div>
-                <div class="about-image">
-                    <div class="image-wrapper">
-                        <img src="https://unsplash.com" alt="Plataforma de Streaming em múltiplos dispositivos">
+
+                <div class="media-card">
+                    <div class="poster-container">
+                        <img src="https://unsplash.com" alt="Filme 2">
+                        <span class="card-badge">4K Dublado</span>
+                    </div>
+                    <div class="card-details">
+                        <h3>Batman: O Cavaleiro das Trevas</h3>
+                        <p>Ação / Suspense</p>
+                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
                     </div>
                 </div>
+
+                <div class="media-card">
+                    <div class="poster-container">
+                        <img src="https://unsplash.com" alt="Filme 3">
+                        <span class="card-badge">1080p</span>
+                    </div>
+                    <div class="card-details">
+                        <h3>A Origem</h3>
+                        <p>Ficção / Ação</p>
+                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Dar Play</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Seção do Catálogo de Produtos / Serviços -->
-    <section id="catalogo" class="catalog-section">
+    <!-- Grid de Séries Completas -->
+    <section id="series" class="catalog-section alt-bg">
         <div class="section-container">
-            <div class="center-title">
-                <h2 class="section-title">Conteúdos <span>Disponíveis</span></h2>
-                <p class="section-subtitle">Navegue pelas categorias mais acessadas e completas da nossa comunidade.</p>
-            </div>
+            <h2 class="catalog-heading"><i class="fa-solid fa-tv text-pop"></i> Séries <span>Completas</span></h2>
+            <div class="media-grid">
 
-            <div class="catalog-grid">
-                <!-- Card 1 -->
-                <div class="catalog-card">
-                    <div class="card-image">
-                        <img src="https://unsplash.com" alt="Futebol ao Vivo">
-                        <div class="card-badge live">Ao Vivo</div>
+                <div class="media-card">
+                    <div class="poster-container">
+                        <img src="https://unsplash.com" alt="Série 1">
+                        <span class="card-badge series">Temporadas Completas</span>
                     </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Futebol de E-Sports</h3>
-                        <p class="card-description">Acompanhe as maiores ligas e campeonatos de futebol digital do mundo simulados em tempo real com narração profissional.</p>
-                        <a href="https://wa.me" target="_blank" class="card-link">Assistir Transmissão <i class="fa-solid fa-arrow-right"></i></a>
+                    <div class="card-details">
+                        <h3>Stranger Things</h3>
+                        <p>Ficção / Mistério</p>
+                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Assistir Série</button>
                     </div>
                 </div>
 
-                <!-- Card 2 -->
-                <div class="catalog-card">
-                    <div class="card-image">
-                        <img src="https://unsplash.com" alt="Filmes e Séries">
-                        <div class="card-badge">Dublado</div>
+                <div class="media-card">
+                    <div class="poster-container">
+                        <img src="https://unsplash.com" alt="Série 2">
+                        <span class="card-badge series">Completa</span>
                     </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Filmes Atualizados</h3>
-                        <p class="card-description">Acesso rápido a produções completas, organizadas por categorias, com áudio dual e qualidade de cinema diretamente no navegador.</p>
-                        <a href="https://wa.me" target="_blank" class="card-link">Acessar Filmes <i class="fa-solid fa-arrow-right"></i></a>
+                    <div class="card-details">
+                        <h3>Breaking Bad</h3>
+                        <p>Drama / Crime</p>
+                        <button class="btn-card-play" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-circle-play"></i> Assistir Série</button>
                     </div>
                 </div>
 
-                <!-- Card 3 -->
-                <div class="catalog-card">
-                    <div class="card-image">
-                        <img src="https://unsplash.com" alt="Novelas Completas">
-                        <div class="card-badge">Completo</div>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Séries & Novelas</h3>
-                        <p class="card-description">Maratone temporadas inteiras das produções mais aclamadas pelo público com acompanhamento diário de novos episódios.</p>
-                        <a href="https://wa.me" target="_blank" class="card-link">Ver Episódios <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
-    <!-- Seção de Depoimentos / Prova Social -->
-    <section id="depoimentos" class="testimonials-section">
+    <!-- Grid de Canais de Futebol Ao Vivo -->
+    <section id="futebol" class="catalog-section">
         <div class="section-container">
-            <div class="center-title">
-                <h2 class="section-title">Quem Assiste, <span>Recomenda</span></h2>
-                <p class="section-subtitle">Veja o depoimento de membros ativos da nossa comunidade de streaming.</p>
-            </div>
+            <h2 class="catalog-heading"><i class="fa-solid fa-circle-dot text-danger pulse"></i> Futebol <span>Ao Vivo</span></h2>
+            <div class="media-grid">
 
-            <div class="testimonials-grid">
-                <!-- Depoimento 1 -->
-                <div class="testimonial-card">
-                    <div class="testimonial-stars">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <div class="media-card live-card">
+                    <div class="poster-container">
+                        <img src="https://unsplash.com" alt="Futebol 1">
+                        <span class="card-badge live">ONLINE AGORA</span>
                     </div>
-                    <p class="testimonial-text">"A qualidade das transmissões dos campeonatos de futebol me surpreendeu. Não trava nada no celular e o som é limpo. Vale muito a pena."</p>
-                    <div class="testimonial-user">
-                        <div class="user-avatar">
-                            <img src="https://unsplash.com" alt="Usuário Carlos">
-                        </div>
-                        <div class="user-info">
-                            <h4 class="user-name">Carlos Henrique</h4>
-                            <span class="user-role">Assinante VIP há 6 meses</span>
-                        </div>
+                    <div class="card-details">
+                        <h3>Liga dos Campeões - Transmissão 1</h3>
+                        <p>Futebol Internacional ao vivo</p>
+                        <button class="btn-card-play live-btn" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-satellite-dish"></i> Conectar Sinal</button>
                     </div>
                 </div>
 
-                <!-- Depoimento 2 -->
-                <div class="testimonial-card">
-                    <div class="testimonial-stars">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <div class="media-card live-card">
+                    <div class="poster-container">
+                        <img src="https://unsplash.com" alt="Futebol 2">
+                        <span class="card-badge live">ONLINE AGORA</span>
                     </div>
-                    <p class="testimonial-text">"Uso o site para assistir séries antigas e novelas que não acho em lugar nenhum. O catálogo se mantém atualizado e a interface é linda."</p>
-                    <div class="testimonial-user">
-                        <div class="user-avatar">
-                            <img src="https://unsplash.com" alt="Usuária Mariana">
-                        </div>
-                        <div class="user-info">
-                            <h4 class="user-name">Mariana Souza</h4>
-                            <span class="user-role">Assinante Premium</span>
-                        </div>
+                    <div class="card-details">
+                        <h3>Campeonato Brasileiro - Sinal 2</h3>
+                        <p>Principais rodadas do dia</p>
+                        <button class="btn-card-play live-btn" onclick="openPlayer('https://youtube.com')"><i class="fa-solid fa-satellite-dish"></i> Conectar Sinal</button>
                     </div>
                 </div>
+
             </div>
+        </div>
+    </section>
+
+    <!-- Modal do Player de Vídeo Integrado (Sem redirecionar o usuário) -->
+    <div class="player-modal" id="playerModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> Fechar Player</button>
+            <div class="video-wrapper">
+                <iframe id="videoPlayerFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulário de Suporte / Contato -->
+    <section id="contato" class="contact-section">
+        <div class="section-container small-container">
+            <h2 class="catalog-heading text-center">Teve problemas com algum link? <span>Avise-nos</span></h2>
+            <form id="contactForm" class="styled-form">
+                <div class="form-group">
+                    <label for="name">Seu Nome</label>
+                    <input type="text" id="name" placeholder="Insira seu nome completo">
+                    <span class="error-text">O nome precisa ter mais de 3 letras.</span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Seu E-mail</label>
+                    <input type="email" id="email" placeholder="nome@exemplo.com">
+                    <span class="error-text">Insira um e-mail válido.</span>
+                </div>
+                <div class="form-group">
+                    <label for="message">Qual link ou canal está com problema?</label>
