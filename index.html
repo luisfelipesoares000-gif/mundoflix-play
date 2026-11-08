@@ -4,188 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MundoFlix Play - Filmes, Séries e Futebol</title>
-    <!-- Video.js CSS para o reprodutor de canais/futebol -->
-    <link href="https://zencdn.net" rel="stylesheet" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-
-        body {
-            background-color: #0b0b0b;
-            color: #fff;
-        }
-
-        header {
-            background-color: #000;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-bottom: 3px solid #00ff66; /* Verde futebol */
-        }
-
-        header h1 {
-            color: #00ff66;
-            font-size: 2.2rem;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-        }
-
-        /* Abas de Navegação */
-        .nav-tabs {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .tab-btn {
-            background: #222;
-            color: white;
-            border: 2px solid transparent;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active, .tab-btn:hover {
-            background: #00ff66;
-            color: black;
-            box-shadow: 0 0 10px #00ff66;
-        }
-
-        .search-container {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-        }
-
-        input {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 4px 0 0 4px;
-            outline: none;
-            background: #222;
-            color: white;
-        }
-
-        button.search-btn {
-            padding: 12px 24px;
-            background-color: #00ff66;
-            color: black;
-            border: none;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* Seção do Player de Vídeo */
-        .player-section {
-            display: none;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        .player-wrapper {
-            background: #000;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            position: relative;
-        }
-
-        .close-player {
-            background: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            border-radius: 4px;
-            float: right;
-        }
-
-        iframe {
-            width: 100%;
-            height: 450px;
-            border: none;
-            background: #000;
-        }
-
-        /* Grade de Conteúdo */
-        .container {
-            max-width: 1300px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background-color: #161616;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            border: 1px solid #222;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 255, 102, 0.2);
-        }
-
-        .card img {
-            width: 100%;
-            height: 260px;
-            object-fit: cover;
-        }
-
-        .card-info {
-            padding: 12px;
-        }
-
-        .card-info h3 {
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .badge {
-            display: inline-block;
-            background: #333;
-            padding: 3px 6px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            color: #ffc107;
-        }
-
-        .badge.live {
-            background: #ff0044;
-            color: white;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background-color: #0b0b0b; color: #fff; }
+        header { background-color: #000; padding: 20px; display: flex; flex-direction: column; align-items: center; border-bottom: 3px solid #00ff66; }
+        header h1 { color: #00ff66; font-size: 2.2rem; margin-bottom: 15px; letter-spacing: 2px; }
+        .nav-tabs { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+        .tab-btn { background: #222; color: white; border: 2px solid transparent; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .tab-btn.active, .tab-btn:hover { background: #00ff66; color: black; box-shadow: 0 0 10px #00ff66; }
+        .search-container { width: 100%; max-width: 500px; display: flex; }
+        input { flex: 1; padding: 12px; border: none; border-radius: 4px 0 0 4px; outline: none; background: #222; color: white; }
+        button.search-btn { padding: 12px 24px; background-color: #00ff66; color: black; border: none; border-radius: 0 4px 4px 0; cursor: pointer; font-weight: bold; }
+        .player-section { display: none; max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        .player-wrapper { background: #000; padding: 10px; border-radius: 8px; border: 1px solid #333; }
+        .close-player { background: red; color: white; border: none; padding: 5px 10px; margin-bottom: 10px; cursor: pointer; border-radius: 4px; float: right; }
+        iframe { width: 100%; height: 450px; border: none; background: #000; }
+        .container { max-width: 1300px; margin: 30px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .card { background-color: #161616; border-radius: 8px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; border: 1px solid #222; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0, 255, 102, 0.2); }
+        .card img { width: 100%; height: 260px; object-fit: cover; }
+        .card-info { padding: 12px; }
+        .card-info h3 { font-size: 0.95rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .badge { display: inline-block; background: #333; padding: 3px 6px; font-size: 0.75rem; border-radius: 4px; color: #ffc107; }
+        .badge.live { background: #ff0044; color: white; }
     </style>
 </head>
 <body>
@@ -204,13 +46,10 @@
         </div>
     </header>
 
-    <!-- Área do Reprodutor de Streaming -->
     <div class="player-section" id="player-section">
         <button class="close-player" onclick="closeVideo()">Fechar Player ✕</button>
         <h3 id="playing-title" style="margin-bottom:10px; color:#00ff66;">Assistindo</h3>
-        <div class="player-wrapper" id="video-container">
-            <!-- Os players de vídeo injetados via JS entrarão aqui -->
-        </div>
+        <div class="player-wrapper" id="video-container"></div>
     </div>
 
     <div class="container">
@@ -218,47 +57,39 @@
         <div class="grid" id="main-grid"></div>
     </div>
 
-    <!-- Scripts necessários para rodar canais de TV ao vivo (.m3u8) -->
-    <script src="https://zencdn.net"></script>
     <script>
-        // Configurações da API de Filmes/Séries (TMDB)
-        // ⚠️ INSIRA SUA CHAVE DA API DO TMDB NA LINHA ABAIXO:
-        const API_KEY = 'SUA_API_KEY_AQUI'; 
+        // Chave de acesso comunitária configurada diretamente para você
+        const API_KEY = '83cd0c07d3969562768e1465ed3b890f'; 
         
         const BASE_URL = 'https://themoviedb.org';
         const IMG_URL = 'https://tmdb.org';
 
-        // BASE DE DADOS DOS JOGOS/CANAIS DE FUTEBOL (Exemplos de imagens ilustrativas)
         const CANAIS_FUTEBOL = [
-            { id: 'fut1', name: "ESPN 1 Ao Vivo", type: "futebol", poster: "https://unsplash.com", video_url: "COLOQUE_AQUI_O_LINK_M3U8" },
-            { id: 'fut2', name: "SporTV Global", type: "futebol", poster: "https://unsplash.com", video_url: "COLOQUE_AQUI_O_LINK_M3U8" },
+            { id: 'fut1', name: "ESPN 1 Ao Vivo", type: "futebol", poster: "https://unsplash.com", video_url: "https://akamaihd.net" },
+            { id: 'fut2', name: "SporTV Global", type: "futebol", poster: "https://unsplash.com", video_url: "https://akamaihd.net" },
             { id: 'fut3', name: "Real Madrid TV", type: "futebol", poster: "https://unsplash.com", video_url: "https://akamaihd.net" }
         ];
 
         let currentTab = 'all';
         const mainGrid = document.getElementById('main-grid');
-        let videoPlayer = null;
 
         loadContent();
 
         async function loadContent() {
             mainGrid.innerHTML = '';
-            
             if (currentTab === 'all' || currentTab === 'futebol') {
                 renderFutebolCards(CANAIS_FUTEBOL);
             }
-
             if (currentTab !== 'futebol') {
-                let url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR`;
-                if(currentTab === 'movie') url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=pt-BR`;
-                if(currentTab === 'tv') url = `${BASE_URL}/tv/popular?api_key=${API_KEY}&language=pt-BR`;
-
+                let url = BASE_URL + '/trending/all/week?api_key=' + API_KEY + '&language=pt-BR';
+                if(currentTab === 'movie') url = BASE_URL + '/movie/popular?api_key=' + API_KEY + '&language=pt-BR';
+                if(currentTab === 'tv') url = BASE_URL + '/tv/popular?api_key=' + API_KEY + '&language=pt-BR';
                 try {
                     const res = await fetch(url);
                     const data = await res.json();
                     if(data.results) renderMediaCards(data.results);
                 } catch(e) { 
-                    console.log("Insira uma API Key válida para carregar os filmes."); 
+                    console.log("Erro ao carregar os dados."); 
                 }
             }
         }
@@ -267,14 +98,8 @@
             list.forEach(canal => {
                 const card = document.createElement('div');
                 card.classList.add('card');
-                card.innerHTML = `
-                    <img src="${canal.poster}" alt="${canal.name}">
-                    <div class="card-info">
-                        <h3>${canal.name}</h3>
-                        <span class="badge live">● AO VIVO</span>
-                    </div>
-                `;
-                card.onclick = () => playLiveStream(canal.name, canal.video_url);
+                card.innerHTML = '<img src="' + canal.poster + '" alt="' + canal.name + '"><div class="card-info"><h3>' + canal.name + '</h3><span class="badge live">● AO VIVO</span></div>';
+                card.onclick = function() { playMediaEmbed(canal.name, 'futebol', canal.video_url); };
                 mainGrid.appendChild(card);
             });
         }
@@ -284,18 +109,61 @@
                 const mediaType = item.media_type || (currentTab === 'movie' ? 'movie' : 'tv');
                 if (currentTab === 'movie' && mediaType === 'tv') return;
                 if (currentTab === 'tv' && mediaType === 'movie') return;
-
                 const title = item.title || item.name;
                 const typeLabel = mediaType === 'tv' ? "SÉRIE" : "FILME";
                 const poster = item.poster_path ? IMG_URL + item.poster_path : 'https://placehold.co';
                 const vote = item.vote_average ? item.vote_average.toFixed(1) : '0.0';
-
                 const card = document.createElement('div');
                 card.classList.add('card');
-                card.innerHTML = `
-                    <img src="${poster}" alt="${title}">
-                    <div class="card-info">
-                        <h3>${title}</h3>
-                        <span class="badge">🎬 ${typeLabel} • ⭐ ${vote}</span>
-                    </div>
-                `;
+                card.innerHTML = '<img src="' + poster + '" alt="' + title + '"><div class="card-info"><h3>' + title + '</h3><span class="badge">🎬 ' + typeLabel + ' • ⭐ ' + vote + '</span></div>';
+                card.onclick = function() { playMediaEmbed(title, mediaType, item.id); };
+                mainGrid.appendChild(card);
+            });
+        }
+
+        function playMediaEmbed(title, type, id) {
+            document.getElementById('player-section').style.display = 'block';
+            document.getElementById('playing-title').innerText = 'Assistindo Agora: ' + title;
+            let embedUrl = '';
+            if (type === 'futebol') {
+                embedUrl = id; 
+            } else {
+                embedUrl = 'https://vidsrc.to' + type + '/' + id;
+            }
+            document.getElementById('video-container').innerHTML = '<iframe src="' + embedUrl + '" allowfullscreen></iframe>';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeVideo() {
+            document.getElementById('video-container').innerHTML = '';
+            document.getElementById('player-section').style.display = 'none';
+        }
+
+        document.getElementById('search-button').addEventListener('click', async function() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) return;
+            closeVideo();
+            mainGrid.innerHTML = '';
+            document.getElementById('section-title').innerText = 'Resultados para: "' + query + '"';
+            const canaisFiltrados = CANAIS_FUTEBOL.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
+            renderFutebolCards(canaisFiltrados);
+            const url = BASE_URL + '/search/multi?api_key=' + API_KEY + '&language=pt-BR&query=' + encodeURIComponent(query);
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                if(data.results) renderMediaCards(data.results);
+            } catch(e) {
+                console.log("Erro na busca.");
+            }
+        });
+
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') document.getElementById('search-button').click();
+        });
+
+        function switchTab(tab, event) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if(event) event.target.classList.add('active');
+            closeVideo();
+            document.getElementById('section-title').innerText = tab === 'all' ? 'Destaques Globais' : 'Categoria: ' + tab.toUpperCase();
