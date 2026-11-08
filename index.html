@@ -85,32 +85,6 @@
         let currentTab = 'all';
         const mainGrid = document.getElementById('main-grid');
 
-        loadContent();
-
-        async function loadContent() {
-            mainGrid.innerHTML = '';
-            if (currentTab === 'all' || currentTab === 'futebol') {
-                renderFutebolCards(CANAIS_FUTEBOL);
-            }
-
-            if (currentTab !== 'futebol') {
-                let path = '/trending/all/week';
-                if (currentTab === 'movie') path = '/movie/popular';
-                if (currentTab === 'tv') path = '/tv/popular';
-
-                const url = BASE_URL + path + '?api_key=' + API_KEY + '&language=pt-BR';
-                try {
-                    const res = await fetch(url);
-                    const data = await res.json();
-                    if (data && data.results) {
-                        renderMediaCards(data.results);
-                    }
-                } catch(e) { 
-                    console.error("Erro no carregamento."); 
-                }
-            }
-        }
-
         function renderFutebolCards(list) {
             list.forEach(canal => {
                 const card = document.createElement('div');
@@ -146,6 +120,30 @@
             });
         }
 
+        async function loadContent() {
+            mainGrid.innerHTML = '';
+            if (currentTab === 'all' || currentTab === 'futebol') {
+                renderFutebolCards(CANAIS_FUTEBOL);
+            }
+
+            if (currentTab !== 'futebol') {
+                let path = '/trending/all/week';
+                if (currentTab === 'movie') path = '/movie/popular';
+                if (currentTab === 'tv') path = '/tv/popular';
+
+                const url = BASE_URL + path + '?api_key=' + API_KEY + '&language=pt-BR';
+                try {
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    if (data && data.results) {
+                        renderMediaCards(data.results);
+                    }
+                } catch(e) { 
+                    console.error("Erro no carregamento."); 
+                }
+            }
+        }
+
         function playMediaStream(title, type, id) {
             document.getElementById('player-section').style.display = 'block';
             document.getElementById('playing-title').innerText = 'Assistindo Agora: ' + title;
@@ -166,7 +164,7 @@
             document.getElementById('player-section').style.display = 'none';
         }
 
-        document.getElementById('search-button').addEventListener('click', async function() {
+        async function searchMundoflix() {
             const query = document.getElementById('search-input').value.trim();
             if (!query) return;
 
