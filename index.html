@@ -182,7 +182,7 @@
         }
 
         @keyframes pulse {
-            0 { opacity: 0.6; }
+            0% { opacity: 0.6; }
             50% { opacity: 1; }
             100% { opacity: 0.6; }
         }
@@ -204,7 +204,7 @@
         </div>
     </header>
 
-    <!-- Área Única do Reprodutor (HLS para canais e Embed para Filmes) -->
+    <!-- Área do Reprodutor de Streaming -->
     <div class="player-section" id="player-section">
         <button class="close-player" onclick="closeVideo()">Fechar Player ✕</button>
         <h3 id="playing-title" style="margin-bottom:10px; color:#00ff66;">Assistindo</h3>
@@ -222,17 +222,16 @@
     <script src="https://zencdn.net"></script>
     <script>
         // Configurações da API de Filmes/Séries (TMDB)
-        // LEMBRETE: Substitua 'SUA_API_KEY_AQUI' pela chave gerada no site do TMDB
-        const API_KEY = 'const API_KEY = '3a1b2c3d4e5f6g7h8i9j...';
-'; 
+        // ⚠️ INSIRA SUA CHAVE DA API DO TMDB NA LINHA ABAIXO:
+        const API_KEY = 'SUA_API_KEY_AQUI'; 
+        
         const BASE_URL = 'https://themoviedb.org';
         const IMG_URL = 'https://tmdb.org';
 
-        // BASE DE DADOS DOS JOGOS/CANAIS DE FUTEBOL
-        // Alimente essa lista com seus links IPTV (.m3u8) favoritos
+        // BASE DE DADOS DOS JOGOS/CANAIS DE FUTEBOL (Exemplos de imagens ilustrativas)
         const CANAIS_FUTEBOL = [
-            { id: 'fut1', name: "ESPN 1 Ao Vivo", type: "futebol", poster: "https://unsplash.com", video_url: "COLOQUE_AQUI_O_LINK_M3U8_DO_CANAL" },
-            { id: 'fut2', name: "SporTV Global", type: "futebol", poster: "https://unsplash.com", video_url: "COLOQUE_AQUI_O_LINK_M3U8_DO_CANAL" },
+            { id: 'fut1', name: "ESPN 1 Ao Vivo", type: "futebol", poster: "https://unsplash.com", video_url: "COLOQUE_AQUI_O_LINK_M3U8" },
+            { id: 'fut2', name: "SporTV Global", type: "futebol", poster: "https://unsplash.com", video_url: "COLOQUE_AQUI_O_LINK_M3U8" },
             { id: 'fut3', name: "Real Madrid TV", type: "futebol", poster: "https://unsplash.com", video_url: "https://akamaihd.net" }
         ];
 
@@ -240,18 +239,15 @@
         const mainGrid = document.getElementById('main-grid');
         let videoPlayer = null;
 
-        // Inicializar site carregando conteúdos
         loadContent();
 
         async function loadContent() {
             mainGrid.innerHTML = '';
             
-            // 1. Renderizar Canais de Futebol
             if (currentTab === 'all' || currentTab === 'futebol') {
                 renderFutebolCards(CANAIS_FUTEBOL);
             }
 
-            // 2. Buscar Filmes e Séries do Mundo Todo via API
             if (currentTab !== 'futebol') {
                 let url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR`;
                 if(currentTab === 'movie') url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=pt-BR`;
@@ -262,7 +258,7 @@
                     const data = await res.json();
                     if(data.results) renderMediaCards(data.results);
                 } catch(e) { 
-                    console.log("Insira sua API Key válida do TMDB para listar os filmes globais."); 
+                    console.log("Insira uma API Key válida para carregar os filmes."); 
                 }
             }
         }
@@ -298,3 +294,8 @@
                 card.classList.add('card');
                 card.innerHTML = `
                     <img src="${poster}" alt="${title}">
+                    <div class="card-info">
+                        <h3>${title}</h3>
+                        <span class="badge">🎬 ${typeLabel} • ⭐ ${vote}</span>
+                    </div>
+                `;
