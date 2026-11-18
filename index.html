@@ -2,97 +2,806 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CineFlix</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jogo da Forca</title>
+<meta name="description" content="Jogo da forca em português com categorias, dicas, pontuação e recorde.">
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0d1020;color:#fff;font:16px Arial}
-header{padding:70px 8%;background:linear-gradient(135deg,#171b43,#681d67)}
-h1{font-size:clamp(2rem,6vw,4rem);margin:10px 0}
-input,select{padding:14px;border:0;border-radius:10px;margin-top:20px}
-input{width:min(650px,100%)}select{background:#1b2140;color:#fff}
-.toolbar{padding:25px 8%}.grid{padding:0 8%;display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-.card{background:#181d35;border:1px solid #343d69;border-radius:15px;padding:20px}
-.card h2{color:#ffd166}.card p{color:#cbd0ed;line-height:1.5}
-a{display:inline-block;background:#6745e8;color:#fff;padding:11px 15px;
-border-radius:8px;text-decoration:none}
-.notice{margin:35px 8%;color:#bbb}
+  :root {
+    --bg: #f3f4fb;
+    --card: #ffffff;
+    --text: #1f2340;
+    --muted: #6b7090;
+    --primary: #5b5bf0;
+    --primary-dark: #4545d6;
+    --border: #dfe2f2;
+    --key: #eceefb;
+    --key-hover: #dcdffa;
+    --good: #1fa971;
+    --bad: #e5484d;
+    --warn: #f5a524;
+    --draw: #1f2340;
+    --shadow: 0 10px 30px rgba(40, 40, 100, .12);
+  }
+  :root[data-theme="dark"] {
+    --bg: #12142a;
+    --card: #1b1e3b;
+    --text: #eef0ff;
+    --muted: #9ca1c9;
+    --primary: #7c7cff;
+    --primary-dark: #9a9aff;
+    --border: #2b2f57;
+    --key: #262a50;
+    --key-hover: #31366a;
+    --good: #35c98c;
+    --bad: #ff6b70;
+    --warn: #ffbf47;
+    --draw: #eef0ff;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .4);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    transition: background .3s, color .3s;
+  }
+
+  header {
+    width: 100%;
+    max-width: 860px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  header h1 { font-size: clamp(1.4rem, 4vw, 2rem); margin: 0; letter-spacing: .5px; }
+  .header-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+  .icon-btn:hover { transform: translateY(-1px); }
+
+  .card {
+    width: 100%;
+    max-width: 860px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .toolbar label { font-weight: 600; font-size: .9rem; color: var(--muted); margin-right: 6px; }
+  select {
+    background: var(--key);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .stat {
+    background: var(--key);
+    border-radius: 14px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .stat span { display: block; font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+  .stat strong { font-size: 1.35rem; }
+
+  .game {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+  @media (max-width: 680px) {
+    .game { grid-template-columns: 1fr; }
+  }
+
+  .drawing { display: flex; justify-content: center; }
+  svg { width: 100%; max-width: 230px; height: auto; }
+  svg .gallows { stroke: var(--muted); stroke-width: 5; stroke-linecap: round; fill: none; }
+  svg .part {
+    stroke: var(--draw);
+    stroke-width: 5;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  svg .part.show { opacity: 1; }
+  svg.lost .part { stroke: var(--bad); }
+  svg.won .part { stroke: var(--good); }
+
+  .info { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .badge {
+    background: var(--key);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: .9rem;
+    font-weight: 600;
+  }
+  .lives { font-size: 1.1rem; letter-spacing: 2px; }
+
+  .hint-box {
+    min-height: 44px;
+    background: var(--key);
+    border-left: 4px solid var(--warn);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--muted);
+    font-size: .98rem;
+  }
+  .hint-box.visible { color: var(--text); }
+
+  .word {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 8px 0;
+  }
+  .letter {
+    width: clamp(28px, 7vw, 44px);
+    height: clamp(38px, 9vw, 54px);
+    border-bottom: 4px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .letter.gap { border-bottom-color: transparent; width: 16px; }
+  .letter.dash { border-bottom-color: transparent; width: 22px; color: var(--muted); }
+  .letter.missed { color: var(--bad); }
+  .letter.pop { animation: pop .3s ease; }
+  @keyframes pop { 0% { transform: scale(.5); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+  .message {
+    min-height: 28px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .message.win { color: var(--good); }
+  .message.lose { color: var(--bad); }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 11px 18px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .1s, background .2s;
+  }
+  .btn:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
+  .btn.secondary { background: var(--key); color: var(--text); border: 1px solid var(--border); }
+  .btn.secondary:hover:not(:disabled) { background: var(--key-hover); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+  .keyboard {
+    margin-top: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+  .row { display: flex; gap: 6px; justify-content: center; flex-wrap: nowrap; }
+  .key {
+    background: var(--key);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: clamp(28px, 8.4vw, 52px);
+    height: clamp(40px, 10vw, 54px);
+    font-size: clamp(.95rem, 3.4vw, 1.2rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .08s, background .2s;
+  }
+  .key:hover:not(:disabled) { background: var(--key-hover); transform: translateY(-1px); }
+  .key:disabled { cursor: not-allowed; }
+  .key.correct { background: var(--good); color: #fff; border-color: var(--good); }
+  .key.wrong { background: var(--bad); color: #fff; border-color: var(--bad); opacity: .75; }
+
+  .shake { animation: shake .35s; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  footer { margin-top: 16px; color: var(--muted); font-size: .85rem; text-align: center; }
+  kbd {
+    background: var(--key);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1px 6px;
+    font-size: .8rem;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); border: 0;
+  }
 </style>
 </head>
 <body>
 
 <header>
-<div style="color:#ffd166;letter-spacing:4px">CINEFLIX</div>
-<h1>Filmes, séries, novelas e futebol</h1>
-<p>Encontre conteúdos e acesse somente fontes oficiais.</p>
-<input id="busca" placeholder="Buscar título, gênero ou tipo...">
+  <h1>🎯 Jogo da Forca</h1>
+  <div class="header-actions">
+    <button class="icon-btn" id="soundBtn" title="Ligar/desligar som" aria-label="Ligar ou desligar o som">🔊</button>
+    <button class="icon-btn" id="themeBtn" title="Alternar tema claro/escuro" aria-label="Alternar tema">🌙</button>
+  </div>
 </header>
 
-<div class="toolbar">
-<select id="tipo">
-<option value="">Todos os tipos</option>
-<option>Filme</option><option>Série</option>
-<option>Novela</option><option>Futebol</option>
-</select>
-</div>
+<main class="card">
+  <div class="toolbar">
+    <div>
+      <label for="category">Categoria:</label>
+      <select id="category"></select>
+    </div>
+    <button class="btn secondary" id="resetStatsBtn" title="Zerar pontuação e recorde">Zerar placar</button>
+  </div>
 
-<main id="catalogo" class="grid"></main>
+  <section class="stats" aria-label="Placar">
+    <div class="stat"><span>Pontos</span><strong id="score">0</strong></div>
+    <div class="stat"><span>Sequência</span><strong id="streak">0</strong></div>
+    <div class="stat"><span>Recorde</span><strong id="best">0</strong></div>
+    <div class="stat"><span>Vitórias</span><strong id="wins">0</strong></div>
+    <div class="stat"><span>Derrotas</span><strong id="losses">0</strong></div>
+  </section>
 
-<p class="notice">
-Este catálogo não hospeda cópias nem transmissões. Use somente links autorizados.
-</p>
+  <section class="game">
+    <div class="drawing">
+      <svg id="hangman" viewBox="0 0 200 220" role="img" aria-label="Desenho da forca">
+        <line class="gallows" x1="20" y1="210" x2="180" y2="210"/>
+        <line class="gallows" x1="60" y1="210" x2="60" y2="20"/>
+        <line class="gallows" x1="60" y1="20" x2="140" y2="20"/>
+        <line class="gallows" x1="140" y1="20" x2="140" y2="45"/>
+        <circle class="part" cx="140" cy="60" r="15"/>
+        <line class="part" x1="140" y1="75" x2="140" y2="135"/>
+        <line class="part" x1="140" y1="90" x2="115" y2="115"/>
+        <line class="part" x1="140" y1="90" x2="165" y2="115"/>
+        <line class="part" x1="140" y1="135" x2="118" y2="175"/>
+        <line class="part" x1="140" y1="135" x2="162" y2="175"/>
+      </svg>
+    </div>
+
+    <div class="info">
+      <div class="badges">
+        <span class="badge" id="catBadge">Categoria</span>
+        <span class="badge">Erros: <span id="wrongCount">0</span>/6</span>
+        <span class="badge lives" id="lives" aria-hidden="true"></span>
+      </div>
+
+      <div class="hint-box" id="hintBox">💡 Clique em “Ver dica” se precisar de uma ajudinha.</div>
+
+      <div class="word" id="word" aria-live="polite"></div>
+
+      <div class="message" id="message" role="status" aria-live="assertive"></div>
+
+      <div class="actions">
+        <button class="btn secondary" id="hintBtn">💡 Ver dica (−10 pts)</button>
+        <button class="btn secondary" id="revealBtn">🔍 Revelar letra (−20 pts)</button>
+        <button class="btn" id="newBtn">🔄 Nova palavra</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="keyboard" id="keyboard" aria-label="Teclado de letras"></section>
+</main>
+
+<footer>
+  Dica: você também pode usar o teclado do computador. Pressione <kbd>Enter</kbd> para uma nova palavra.
+</footer>
 
 <script>
-const conteudos=[
- {
-  titulo:"Exemplo de filme oficial",
-  tipo:"Filme",
-  genero:"Drama",
-  descricao:"Substitua este exemplo por um filme autorizado.",
-  link:"https://www.youtube.com/"
- },
- {
-  titulo:"Exemplo de série oficial",
-  tipo:"Série",
-  genero:"Aventura",
-  descricao:"Adicione a plataforma oficial e a sinopse.",
-  link:"https://www.youtube.com/"
- },
- {
-  titulo:"Próximo jogo de futebol",
-  tipo:"Futebol",
-  genero:"Ao vivo",
-  descricao:"Informe horário, competição e transmissão oficial.",
-  link:"https://www.fifa.com/"
- }
-];
+(() => {
+  "use strict";
 
-function mostrar(){
- const busca=document.querySelector("#busca").value.toLowerCase();
- const tipo=document.querySelector("#tipo").value;
+  /* ===================== BANCO DE PALAVRAS ===================== */
+  const WORDS = {
+    "Animais": [
+      { w: "elefante", h: "É o maior animal terrestre e tem uma tromba." },
+      { w: "girafa", h: "Tem o pescoço mais longo do reino animal." },
+      { w: "golfinho", h: "Mamífero marinho muito inteligente que vive no mar." },
+      { w: "papagaio", h: "Ave colorida que consegue imitar a voz humana." },
+      { w: "tartaruga", h: "Tem um casco e é famosa por ser lenta." },
+      { w: "camaleão", h: "Réptil que muda de cor." },
+      { w: "jacaré", h: "Réptil de boca grande que vive em rios e pântanos." },
+      { w: "morcego", h: "Único mamífero capaz de voar de verdade." },
+      { w: "ornitorrinco", h: "Mamífero australiano que bota ovos e tem bico de pato." },
+      { w: "borboleta", h: "Passa por metamorfose, de lagarta a inseto de asas coloridas." },
+      { w: "cavalo-marinho", h: "Peixe de formato curioso em que o macho carrega os filhotes." },
+      { w: "onça-pintada", h: "Maior felino das Américas, símbolo do Pantanal." }
+    ],
+    "Frutas": [
+      { w: "abacaxi", h: "Tem coroa de folhas e casca cheia de espinhos." },
+      { w: "melancia", h: "Fruta grande, verde por fora, vermelha por dentro e muito suculenta." },
+      { w: "morango", h: "Pequena, vermelha, com sementes na parte de fora." },
+      { w: "laranja", h: "Cítrica, dá o suco mais famoso do café da manhã." },
+      { w: "maracujá", h: "Sua polpa cheia de sementes é usada em mousses e sucos calmantes." },
+      { w: "jabuticaba", h: "Nasce direto no tronco da árvore e tem cor quase preta." },
+      { w: "goiaba", h: "Fruta de polpa rosada, usada para fazer goiabada." },
+      { w: "caju", h: "A castanha nasce do lado de fora do fruto." },
+      { w: "manga", h: "Fruta tropical amarelada com um caroço grande no meio." },
+      { w: "acerola", h: "Pequena, vermelha e riquíssima em vitamina C." },
+      { w: "pitanga", h: "Fruta vermelha, pequena e com gomos, típica do Brasil." },
+      { w: "framboesa", h: "Pequena fruta vermelha parecida com a amora." }
+    ],
+    "Países": [
+      { w: "brasil", h: "Maior país da América do Sul." },
+      { w: "argentina", h: "Terra do tango e vizinha do Brasil ao sul." },
+      { w: "portugal", h: "País europeu onde nasceu a língua portuguesa." },
+      { w: "japão", h: "Conhecido como o país do sol nascente." },
+      { w: "egito", h: "Lar das pirâmides e do rio Nilo." },
+      { w: "austrália", h: "País-continente com cangurus e coalas." },
+      { w: "canadá", h: "Tem uma folha de bordo na bandeira." },
+      { w: "méxico", h: "País da América do Norte famoso pelos tacos." },
+      { w: "itália", h: "Tem formato de bota e é famosa pela pizza." },
+      { w: "índia", h: "País do Taj Mahal, com mais de um bilhão de habitantes." },
+      { w: "noruega", h: "País escandinavo famoso pelos fiordes." },
+      { w: "colômbia", h: "País sul-americano conhecido pelo café e pela cumbia." }
+    ],
+    "Profissões": [
+      { w: "professor", h: "Ensina alunos em escolas e universidades." },
+      { w: "médico", h: "Cuida da saúde das pessoas e trata doenças." },
+      { w: "bombeiro", h: "Combate incêndios e realiza salvamentos." },
+      { w: "engenheiro", h: "Projeta pontes, prédios e máquinas." },
+      { w: "advogado", h: "Defende pessoas e empresas na justiça." },
+      { w: "padeiro", h: "Acorda de madrugada para fazer pães." },
+      { w: "arquiteto", h: "Desenha e planeja casas e edifícios." },
+      { w: "jornalista", h: "Apura e conta as notícias ao público." },
+      { w: "programador", h: "Escreve códigos para criar sites e aplicativos." },
+      { w: "veterinário", h: "Cuida da saúde dos animais." },
+      { w: "cozinheiro", h: "Prepara refeições em restaurantes." },
+      { w: "astronauta", h: "Viaja pelo espaço sideral." }
+    ],
+    "Tecnologia": [
+      { w: "computador", h: "Máquina que processa dados e executa programas." },
+      { w: "internet", h: "Rede mundial que conecta bilhões de dispositivos." },
+      { w: "teclado", h: "Periférico com letras usado para digitar." },
+      { w: "smartphone", h: "Telefone inteligente que cabe no bolso." },
+      { w: "algoritmo", h: "Sequência de passos para resolver um problema." },
+      { w: "javascript", h: "Linguagem que dá vida e interação às páginas da web." },
+      { w: "navegador", h: "Programa usado para acessar sites, como Chrome ou Firefox." },
+      { w: "bluetooth", h: "Tecnologia sem fio de curta distância usada em fones." },
+      { w: "inteligência", h: "Palavra que vem antes de “artificial” em IA." },
+      { w: "servidor", h: "Computador que armazena e entrega o conteúdo de um site." },
+      { w: "senha", h: "Segredo usado para proteger suas contas." },
+      { w: "aplicativo", h: "Programa instalado no celular, também chamado de app." }
+    ],
+    "Objetos": [
+      { w: "guarda-chuva", h: "Protege você nos dias de temporal." },
+      { w: "geladeira", h: "Eletrodoméstico que mantém os alimentos frios." },
+      { w: "óculos", h: "Ajuda quem tem dificuldade de enxergar." },
+      { w: "travesseiro", h: "Apoia a cabeça na hora de dormir." },
+      { w: "ventilador", h: "Gira as pás para refrescar o ambiente." },
+      { w: "relógio", h: "Mostra as horas, no pulso ou na parede." },
+      { w: "mochila", h: "Carregada nas costas, leva os materiais da escola." },
+      { w: "tesoura", h: "Duas lâminas usadas para cortar papel." },
+      { w: "espelho", h: "Reflete a sua imagem." },
+      { w: "lanterna", h: "Ilumina o caminho no escuro." },
+      { w: "cadeado", h: "Protege portões e malas, aberto com chave ou senha." },
+      { w: "liquidificador", h: "Eletrodoméstico que bate vitaminas e sucos." }
+    ],
+    "Esportes": [
+      { w: "futebol", h: "Esporte mais popular do Brasil, jogado com os pés." },
+      { w: "basquete", h: "Esporte em que se arremessa a bola em uma cesta." },
+      { w: "natação", h: "Esporte praticado na piscina." },
+      { w: "vôlei", h: "Duas equipes separadas por uma rede, a bola não pode cair." },
+      { w: "ciclismo", h: "Esporte de pedalar." },
+      { w: "atletismo", h: "Reúne corridas, saltos e arremessos." },
+      { w: "handebol", h: "Esporte coletivo em que a bola é jogada com as mãos até o gol." },
+      { w: "skate", h: "Prancha com rodinhas usada para manobras." },
+      { w: "boxe", h: "Luta com luvas e ringue." },
+      { w: "surfe", h: "Esporte de deslizar sobre as ondas do mar." },
+      { w: "esgrima", h: "Esporte de combate com espadas." },
+      { w: "maratona", h: "Corrida de 42 quilômetros." }
+    ]
+  };
 
- const lista=conteudos.filter(item=>
-  (!tipo||item.tipo===tipo)&&
-  (`${item.titulo} ${item.tipo} ${item.genero}`
-  .toLowerCase().includes(busca))
- );
+  /* ===================== CONFIGURAÇÕES ===================== */
+  const MAX_WRONG = 6;
+  const MAX_REVEALS = 2;
+  const HINT_COST = 10;
+  const REVEAL_COST = 20;
+  const KEY_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 
- document.querySelector("#catalogo").innerHTML=lista.map(item=>`
-  <article class="card">
-   <small>${item.tipo} · ${item.genero}</small>
-   <h2>${item.titulo}</h2>
-   <p>${item.descricao}</p>
-   <a href="${item.link}" target="_blank" rel="noopener">
-    Acessar fonte oficial
-   </a>
-  </article>
- `).join("")||"<p>Nenhum resultado encontrado.</p>";
-}
+  /* ===================== ELEMENTOS ===================== */
+  const $ = (id) => document.getElementById(id);
+  const el = {
+    category: $("category"), catBadge: $("catBadge"), wrongCount: $("wrongCount"),
+    lives: $("lives"), hintBox: $("hintBox"), word: $("word"), message: $("message"),
+    hintBtn: $("hintBtn"), revealBtn: $("revealBtn"), newBtn: $("newBtn"),
+    keyboard: $("keyboard"), hangman: $("hangman"),
+    score: $("score"), streak: $("streak"), best: $("best"), wins: $("wins"), losses: $("losses"),
+    themeBtn: $("themeBtn"), soundBtn: $("soundBtn"), resetStatsBtn: $("resetStatsBtn")
+  };
+  const parts = Array.from(el.hangman.querySelectorAll(".part"));
 
-document.querySelector("#busca").oninput=mostrar;
-document.querySelector("#tipo").onchange=mostrar;
-mostrar();
+  /* ===================== ARMAZENAMENTO SEGURO ===================== */
+  const store = {
+    get(key, fallback) {
+      try {
+        const v = localStorage.getItem(key);
+        return v === null ? fallback : JSON.parse(v);
+      } catch (e) { return fallback; }
+    },
+    set(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* ignora */ }
+    }
+  };
+
+  /* ===================== ESTADO ===================== */
+  const stats = Object.assign({ score: 0, streak: 0, best: 0, wins: 0, losses: 0 }, store.get("forca_stats", {}));
+  let soundOn = store.get("forca_sound", true);
+  let usedWords = new Set();
+  let game = null;
+
+  /* ===================== UTILITÁRIOS ===================== */
+  const normalize = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+  const isLetter = (ch) => /[A-Z]/.test(normalize(ch));
+  const rand = (n) => Math.floor(Math.random() * n);
+
+  /* ===================== SOM ===================== */
+  let audioCtx = null;
+  function beep(freq, duration = 0.12, type = "sine", delay = 0) {
+    if (!soundOn) return;
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const t = audioCtx.currentTime + delay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.15, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(t);
+      osc.stop(t + duration + 0.02);
+    } catch (e) { /* sem áudio */ }
+  }
+  const sounds = {
+    correct: () => beep(660, 0.1, "sine"),
+    wrong: () => beep(180, 0.2, "sawtooth"),
+    win: () => { beep(523, 0.15, "triangle"); beep(659, 0.15, "triangle", 0.15); beep(784, 0.25, "triangle", 0.3); },
+    lose: () => { beep(330, 0.2, "sawtooth"); beep(262, 0.2, "sawtooth", 0.2); beep(196, 0.35, "sawtooth", 0.4); }
+  };
+
+  /* ===================== TEMA ===================== */
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    el.themeBtn.textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+  function initTheme() {
+    const saved = store.get("forca_theme", null);
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(saved || (prefersDark ? "dark" : "light"));
+  }
+  el.themeBtn.addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(next);
+    store.set("forca_theme", next);
+  });
+
+  function renderSoundBtn() { el.soundBtn.textContent = soundOn ? "🔊" : "🔇"; }
+  el.soundBtn.addEventListener("click", () => {
+    soundOn = !soundOn;
+    store.set("forca_sound", soundOn);
+    renderSoundBtn();
+    if (soundOn) beep(600, 0.08);
+  });
+
+  /* ===================== PLACAR ===================== */
+  function renderStats() {
+    el.score.textContent = stats.score;
+    el.streak.textContent = stats.streak;
+    el.best.textContent = stats.best;
+    el.wins.textContent = stats.wins;
+    el.losses.textContent = stats.losses;
+  }
+  function saveStats() { store.set("forca_stats", stats); renderStats(); }
+
+  el.resetStatsBtn.addEventListener("click", () => {
+    if (confirm("Deseja realmente zerar o placar e o recorde?")) {
+      Object.assign(stats, { score: 0, streak: 0, best: 0, wins: 0, losses: 0 });
+      saveStats();
+    }
+  });
+
+  /* ===================== CATEGORIAS ===================== */
+  function buildCategories() {
+    el.category.innerHTML = "";
+    const all = document.createElement("option");
+    all.value = "__all__";
+    all.textContent = "🎲 Todas (aleatório)";
+    el.category.appendChild(all);
+    Object.keys(WORDS).forEach((c) => {
+      const o = document.createElement("option");
+      o.value = c;
+      o.textContent = c;
+      el.category.appendChild(o);
+    });
+    const saved = store.get("forca_category", "__all__");
+    el.category.value = (saved === "__all__" || WORDS[saved]) ? saved : "__all__";
+  }
+  el.category.addEventListener("change", () => {
+    store.set("forca_category", el.category.value);
+    newGame();
+  });
+
+  function pickWord() {
+    const sel = el.category.value;
+    let pool = [];
+    if (sel === "__all__") {
+      Object.entries(WORDS).forEach(([cat, list]) => list.forEach((item) => pool.push({ ...item, cat })));
+    } else {
+      WORDS[sel].forEach((item) => pool.push({ ...item, cat: sel }));
+    }
+    let fresh = pool.filter((p) => !usedWords.has(p.cat + "|" + p.w));
+    if (fresh.length === 0) {
+      pool.forEach((p) => usedWords.delete(p.cat + "|" + p.w));
+      fresh = pool;
+    }
+    const choice = fresh[rand(fresh.length)];
+    usedWords.add(choice.cat + "|" + choice.w);
+    return choice;
+  }
+
+  /* ===================== TECLADO NA TELA ===================== */
+  function buildKeyboard() {
+    el.keyboard.innerHTML = "";
+    KEY_ROWS.forEach((row) => {
+      const div = document.createElement("div");
+      div.className = "row";
+      row.split("").forEach((ch) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "key";
+        b.textContent = ch;
+        b.dataset.letter = ch;
+        b.setAttribute("aria-label", "Letra " + ch);
+        b.addEventListener("click", () => guess(ch));
+        div.appendChild(b);
+      });
+      el.keyboard.appendChild(div);
+    });
+  }
+  function keyButton(letter) { return el.keyboard.querySelector('[data-letter="' + letter + '"]'); }
+
+  /* ===================== RENDERIZAÇÃO ===================== */
+  function renderWord(popLetter) {
+    el.word.innerHTML = "";
+    const chars = Array.from(game.word);
+    chars.forEach((ch) => {
+      const span = document.createElement("span");
+      span.className = "letter";
+      if (ch === " ") {
+        span.classList.add("gap");
+      } else if (!isLetter(ch)) {
+        span.classList.add("dash");
+        span.textContent = ch;
+      } else {
+        const n = normalize(ch);
+        if (game.guessed.has(n)) {
+          span.textContent = ch;
+          if (popLetter && n === popLetter) span.classList.add("pop");
+        } else if (game.over && !game.won) {
+          span.textContent = ch;
+          span.classList.add("missed");
+        }
+      }
+      el.word.appendChild(span);
+    });
+  }
+
+  function renderLives() {
+    const left = MAX_WRONG - game.wrong;
+    el.lives.textContent = "❤️".repeat(left) + "🖤".repeat(game.wrong);
+    el.wrongCount.textContent = game.wrong;
+    parts.forEach((p, i) => p.classList.toggle("show", i < game.wrong));
+  }
+
+  function setMessage(text, kind) {
+    el.message.textContent = text;
+    el.message.className = "message" + (kind ? " " + kind : "");
+  }
+
+  function renderButtons() {
+    el.hintBtn.disabled = game.over || game.hintShown;
+    const remainingLetters = game.letters.filter((l) => !game.guessed.has(l)).length;
+    el.revealBtn.disabled = game.over || game.reveals >= MAX_REVEALS || remainingLetters <= 1;
+    el.revealBtn.textContent = "🔍 Revelar letra (−" + REVEAL_COST + " pts) " + (MAX_REVEALS - game.reveals) + "/" + MAX_REVEALS;
+  }
+
+  function renderAll() {
+    el.catBadge.textContent = "📂 " + game.cat;
+    el.hintBox.className = "hint-box" + (game.hintShown ? " visible" : "");
+    el.hintBox.textContent = game.hintShown ? "💡 " + game.hint : "💡 Clique em “Ver dica” se precisar de uma ajudinha.";
+    renderWord();
+    renderLives();
+    renderButtons();
+  }
+
+  /* ===================== LÓGICA DO JOGO ===================== */
+  function newGame() {
+    const pick = pickWord();
+    const letters = Array.from(new Set(
+      Array.from(pick.w).filter(isLetter).map(normalize)
+    ));
+    game = {
+      word: pick.w,
+      cat: pick.cat,
+      hint: pick.h,
+      letters,
+      guessed: new Set(),
+      wrong: 0,
+      reveals: 0,
+      hintShown: false,
+      over: false,
+      won: false
+    };
+    el.hangman.classList.remove("lost", "won");
+    buildKeyboard();
+    setMessage("");
+    renderAll();
+  }
+
+  function checkWin() {
+    return game.letters.every((l) => game.guessed.has(l));
+  }
+
+  function guess(letter) {
+    if (!game || game.over) return;
+    const n = normalize(letter);
+    if (!/^[A-Z]$/.test(n) || game.guessed.has(n)) return;
+
+    game.guessed.add(n);
+    const btn = keyButton(n);
+    const hit = game.letters.includes(n);
+
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add(hit ? "correct" : "wrong");
+    }
+
+    if (hit) {
+      sounds.correct();
+      renderWord(n);
+      if (checkWin()) return endGame(true);
+    } else {
+      game.wrong++;
+      sounds.wrong();
+      el.hangman.classList.remove("shake");
+      void el.hangman.getBoundingClientRect();
+      el.hangman.classList.add("shake");
+      renderLives();
+      if (game.wrong >= MAX_WRONG) return endGame(false);
+    }
+    renderButtons();
+  }
+
+  function endGame(won) {
+    game.over = true;
+    game.won = won;
+    Array.from(el.keyboard.querySelectorAll(".key")).forEach((k) => (k.disabled = true));
+
+    if (won) {
+      const penalties = (game.hintShown ? HINT_COST : 0) + game.reveals * REVEAL_COST;
+      const base = 50 + game.letters.length * 5 + (MAX_WRONG - game.wrong) * 10 + Math.min(stats.streak, 10) * 5;
+      const gained = Math.max(10, base - penalties);
+      stats.score += gained;
+      stats.streak += 1;
+      stats.wins += 1;
+      if (stats.score > stats.best) stats.best = stats.score;
+      el.hangman.classList.add("won");
+      setMessage("🎉 Parabéns! Você acertou e ganhou " + gained + " pontos!", "win");
+      sounds.win();
+    } else {
+      stats.streak = 0;
+      stats.losses += 1;
+      el.hangman.classList.add("lost");
+      setMessage("😵 Fim de jogo! A palavra era: " + game.word.toUpperCase(), "lose");
+      sounds.lose();
+    }
+    saveStats();
+    renderWord();
+    renderButtons();
+    el.newBtn.focus();
+  }
+
+  /* ===================== DICAS ===================== */
+  el.hintBtn.addEventListener("click", () => {
+    if (!game || game.over || game.hintShown) return;
+    game.hintShown = true;
+    stats.score = Math.max(0, stats.score - HINT_COST);
+    saveStats();
+    renderAll();
+  });
+
+  el.revealBtn.addEventListener("click", () => {
+    if (!game || game.over || game.reveals >= MAX_REVEALS) return;
+    const remaining = game.letters.filter((l) => !game.guessed.has(l));
+    if (remaining.length <= 1) return;
+    const letter = remaining[rand(remaining.length)];
+    game.reveals++;
+    game.guessed.add(letter);
+    stats.score = Math.max(0, stats.score - REVEAL_COST);
+    saveStats();
+    const btn = keyButton(letter);
+    if (btn) { btn.disabled = true; btn.classList.add("correct"); }
+    sounds.correct();
+    renderWord(letter);
+    renderButtons();
+    setMessage("🔍 Letra revelada: " + letter, "");
+  });
+
+  el.newBtn.addEventListener("click", newGame);
+
+  /* ===================== TECLADO FÍSICO ===================== */
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const tag = (e.target && e.target.tagName) || "";
+    if (tag === "SELECT") return;
+
+    if (e.key === "Enter" && game && game.over) {
+      e.preventDefault();
+      newGame();
+      return;
+    }
+    if (e.key.length === 1) {
+      const n = normalize(e.key);
+      if (/^[A-Z]$/.test(n)) guess(n);
+    }
+  });
+
+  /* ===================== INICIALIZAÇÃO ===================== */
+  initTheme();
+  renderSoundBtn();
+  renderStats();
+  buildCategories();
+  newGame();
+})();
 </script>
-
 </body>
 </html>
